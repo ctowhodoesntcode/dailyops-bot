@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyOps Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container" id="app-container">
+        <header class="drag-handle" id="main-header">
+            <div class="logo">
+                <img src="resources/logo.png" alt="DailyOps Bot Logo" class="header-icon"> DailyOps Bot
+            </div>
+            <div class="controls node-drag">
+                <button id="minimizeBtn"><i class="fa-solid fa-minus"></i></button>
+                <button id="closeBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </header>
+
+        <div id="setup-view" class="view active">
+            <h2>Good Morning, Lej!</h2>
+            <p>Ready to crush the day?</p>
+            <div class="schedule-preview">
+                <h3 style="margin-bottom: 5px;">Today's Focus:</h3>
+                <textarea id="today-focus" rows="2" style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: var(--text-primary); resize: vertical; font-family: inherit; font-size: 14px;">OLY, PDFScanAccess, Cefiro research, marketing, systems, and workflow.</textarea>
+                
+                <h3 style="margin-bottom: 5px;">Custom Daily Tasks:</h3>
+                <form id="ops-form" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; align-items:center;">
+                    <input type="time" title="Start Time" id="op-time" style="padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; outline:none; font-family:inherit;">
+                    <span style="color:var(--text-secondary); font-size:12px;">to</span>
+                    <input type="time" title="End Time" id="op-end-time" style="padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; outline:none; font-family:inherit;">
+                    <input type="text" id="op-input" placeholder="e.g. Finalize ad mockups" style="flex:1; min-width: 150px; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; outline:none;">
+                    <button type="submit" class="secondary-btn" style="padding:10px 15px; margin:0;"><i class="fa-solid fa-plus"></i></button>
+                </form>
+                <div id="setup-ops-list" style="max-height: 100px; overflow-y:auto; font-size:14px; margin-bottom: 20px; text-align: left;">
+                    <!-- Tasks injected here -->
+                </div>
+            </div>
+            <button id="startBtn" class="primary-btn" style="width: 100%;">Start My Day</button>
+            <button id="editBtn" class="secondary-btn" style="width: 100%;">Review/Edit Schedule</button>
+        </div>
+
+        <div id="edit-schedule-view" class="view">
+            <h2 style="margin-bottom: 15px;">Edit Schedule</h2>
+            <div id="edit-schedule-list" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <!-- Edit items injected here -->
+            </div>
+            <button id="addBlockBtn" class="secondary-btn" style="width: 100%; margin-bottom: 10px;"><i class="fa-solid fa-plus"></i> Add Time Block</button>
+            <button id="saveScheduleBtn" class="primary-btn" style="width: 100%;">Save Changes</button>
+            <button id="cancelScheduleBtn" class="secondary-btn" style="width: 100%;">Cancel</button>
+        </div>
+
+        <div id="tracker-view" class="view">
+            <div class="current-task glassy-panel" style="margin-bottom: 15px;">
+                <div class="time-left">
+                    <span id="countdown">--:--:--</span>
+                    <small>until next phase</small>
+                </div>
+                <h3 id="current-title">--</h3>
+                <p id="current-desc">--</p>
+                <div class="progress-bar">
+                    <div id="progress" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="checklist-section glassy-panel" style="padding:15px; margin-bottom:15px; text-align:left;">
+                <h4 style="margin-bottom:12px; color:var(--accent); font-size: 15px;">Daily Checklist</h4>
+                <div id="tracker-ops-list" style="font-size: 14px;">
+                    <!-- Checklist items injected here -->
+                    <em style="color:var(--text-secondary); opacity: 0.7;">No custom tasks added for today.</em>
+                </div>
+            </div>
+
+            <div class="notes-section glassy-panel" style="padding:15px; margin-bottom:15px; text-align:left;">
+                <h4 style="margin-bottom:12px; color:var(--accent); font-size: 15px;">End Shift Notes</h4>
+                <textarea id="end-shift-notes" rows="4" placeholder="Any final thoughts, blockers, or notes for tomorrow?" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: var(--text-primary); resize: vertical; font-family: inherit; font-size: 14px;"></textarea>
+            </div>
+            
+            <h4 style="color:var(--text-primary); margin-bottom: 10px; font-weight:600;">Main Schedule Breakdown</h4>
+            <div class="timeline" id="timeline" style="margin-bottom: 20px;">
+                <!-- Timeline items injected via JS -->
+            </div>
+
+            <button id="exportBtn" class="primary-btn" style="width:100%; margin-bottom: 10px;"><i class="fa-solid fa-file-export"></i> Export Shift Report</button>
+            <button id="backBtn" class="secondary-btn" style="width:100%; margin-bottom: 20px;"><i class="fa-solid fa-arrow-left"></i> Back to Main Menu</button>
+        </div>
+
+        <div id="bubble-view" class="view">
+            <div class="bubble-content" title="Drag the edges to move, click the center to expand">
+                <img src="resources/logo.png" alt="Bot Logo" class="bubble-bg-img">
+                <!-- Invisible center hit area for clicking -->
+                <div class="hit-area node-drag" id="bubble-click"></div>
+                <div id="notif-badge" class="notif-badge node-drag" style="display: none;">0</div>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+</html>
